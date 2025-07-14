@@ -11,32 +11,26 @@ interface VideoPageProps {
 export default async function VideoPage({ params }: VideoPageProps) {
   const { country, video: videoName } = await params;
   
-  // Debug logging
-  console.log('Looking for video:', { country, videoName });
-  
   const videos = getAllVideos();
-  console.log('All videos found:', videos);
   
   const video = videos.find(
     v => v.country === country && v.name === videoName
   );
-  
-  console.log('Matched video:', video);
 
   if (!video) {
-    console.log('Video not found, returning 404');
+    console.log('Video not found:', { country, videoName });
+    console.log('Available videos:', videos.map(v => ({ country: v.country, name: v.name })));
     notFound();
   }
 
   return (
     <div style={{ padding: '2rem' }}>
-      {/* <h1>{video.displayName}</h1> */}
       <video 
         controls 
         width="100%" 
         style={{ maxWidth: '800px' }}
       >
-        <source src={`/videos/${video.country}/${video.name}.mp4`} type="video/mp4" />
+        <source src={video.path} type={`video/${video.fileExtension.slice(1)}`} />
         Your browser does not support the video tag.
       </video>
       <p>

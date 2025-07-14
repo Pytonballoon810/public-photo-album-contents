@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { getAllVideos } from "./utils/videoUtils";
 import QRCodeGenerator from "./components/QRCodeGenerator";

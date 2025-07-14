@@ -8,16 +8,11 @@ export interface VideoInfo {
   name: string;
   path: string;
   displayName: string;
+  fileExtension: string;
 }
 
 export function getAllVideos(): VideoInfo[] {
   try {
-    // Check if we can access the file system (for runtime vs build time)
-    if (typeof window !== 'undefined') {
-      // Client-side, return empty array
-      return [];
-    }
-
     if (!fs.existsSync(VIDEOS_DIR)) {
       console.log('Videos directory does not exist:', VIDEOS_DIR);
       return [];
@@ -33,15 +28,20 @@ export function getAllVideos(): VideoInfo[] {
       const countryDir = path.join(VIDEOS_DIR, country);
       try {
         const videoFiles = fs.readdirSync(countryDir)
-          .filter(file => file.endsWith('.mp4') || file.endsWith('.webm') || file.endsWith('.mov'));
+          .filter(file => {
+            const ext = path.extname(file).toLowerCase();
+            return ['.mp4', '.webm', '.mov', '.avi', '.mkv', '.wmv'].includes(ext);
+          });
 
         videoFiles.forEach(videoFile => {
           const videoName = path.parse(videoFile).name;
+          const fileExtension = path.extname(videoFile);
           videos.push({
             country,
             name: videoName,
             path: `/videos/${country}/${videoFile}`,
-            displayName: videoName.replace(/[-_]/g, ' ')
+            displayName: videoName.replace(/[-_]/g, ' '),
+            fileExtension
           });
         });
       } catch (error) {
@@ -49,6 +49,7 @@ export function getAllVideos(): VideoInfo[] {
       }
     });
 
+    console.log(`Found ${videos.length} videos across ${countries.length} countries`);
     return videos;
   } catch (error) {
     console.error('Error reading videos directory:', error);

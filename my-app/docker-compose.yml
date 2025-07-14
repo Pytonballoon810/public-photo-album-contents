@@ -1,8 +1,6 @@
-version: '3.8'
-
 services:
   video-gallery:
-    build: .
+    image: pytonballoon810/video-gallery-app:latest
     container_name: video-gallery-app
     restart: unless-stopped
     ports:
