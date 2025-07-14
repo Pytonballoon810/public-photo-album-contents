@@ -136,3 +136,4 @@ dist
 .pnp.*
 
 my-app/public/videos/*
+my-app/public/qr_codes/*

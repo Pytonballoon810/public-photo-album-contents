@@ -10,9 +10,13 @@ services:
     volumes:
       # Bind mount for videos - change the left path to your host directory
       - ./videos:/app/public/videos:ro
+      # Bind mount for QR codes - for easy extraction of generated QR codes
+      - ./qr_codes:/app/public/qr_codes
     environment:
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
+      # Set your base URL here for QR code generation
+      - BASE_URL=http://localhost:3000
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
       interval: 30s

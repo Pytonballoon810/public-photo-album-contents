@@ -43,9 +43,11 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Create videos directory for mount point
+# Create videos and qr_codes directories for mount points
 RUN mkdir -p /app/public/videos
+RUN mkdir -p /app/public/qr_codes
 RUN chown nextjs:nodejs /app/public/videos
+RUN chown nextjs:nodejs /app/public/qr_codes
 
 USER nextjs
 

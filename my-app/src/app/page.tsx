@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getAllVideos } from "./utils/videoUtils";
+import QRCodeGenerator from "./components/QRCodeGenerator";
 import styles from "./page.module.css";
 
 export default function Home() {
@@ -32,6 +33,9 @@ export default function Home() {
 
         <div style={{ padding: "2rem" }}>
           <h1>Video Gallery</h1>
+          
+          <QRCodeGenerator />
+          
           {Object.entries(videosByCountry).map(([country, countryVideos]) => (
             <div key={country} style={{ marginBottom: "2rem" }}>
               <h2

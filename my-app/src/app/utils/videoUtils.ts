@@ -70,3 +70,12 @@ export function getAllVideoRoutes() {
     slug: [video.country, video.name]
   }));
 }
+
+export function getVideosFingerprint(): string {
+  const videos = getAllVideos();
+  const fingerprint = videos
+    .map(v => `${v.country}:${v.name}`)
+    .sort()
+    .join('|');
+  return fingerprint;
+}

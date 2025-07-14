@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     unoptimized: true
   },
   experimental: {
-    serverComponentsExternalPackages: ['fs']
+    serverComponentsExternalPackages: ['fs', 'qrcode']
   }
 };
 
