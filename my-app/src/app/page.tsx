@@ -1,5 +1,7 @@
+// "use client";
+
 import Link from "next/link";
-import { getAllVideos } from "./utils/videoUtils";
+import { getAllVideos } from "./lib/videoUtils";
 import QRCodeGenerator from "./components/QRCodeGenerator";
 import styles from "./page.module.css";
 

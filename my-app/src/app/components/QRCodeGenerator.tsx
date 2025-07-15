@@ -14,6 +14,7 @@ export default function QRCodeGenerator() {
   const [message, setMessage] = useState('');
   const [qrCodes, setQrCodes] = useState<QRCodeInfo[]>([]);
   const [shouldAutoGenerate, setShouldAutoGenerate] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const generateQRCodes = async () => {
     setIsGenerating(true);
@@ -117,35 +118,61 @@ export default function QRCodeGenerator() {
         </div>
       )}
 
+      {/* Make this section expandable instead of showing it all the time */}
       {qrCodes.length > 0 && (
         <div>
-          <h4 style={{ marginBottom: '0.5rem' }}>Generated QR Codes ({qrCodes.length}):</h4>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
-            gap: '1rem',
-            marginTop: '1rem'
-          }}>
-            {qrCodes.map((qr) => (
-              <div key={qr.fileName} style={{ 
-                textAlign: 'center', 
-                padding: '1rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                backgroundColor: 'white'
-              }}>
-                <img 
-                  src={`/qr_codes/${qr.fileName}`} 
-                  alt={`QR code for ${qr.country} - ${qr.videoName}`}
-                  style={{ width: '150px', height: '150px', marginBottom: '0.5rem' }}
-                />
-                <div style={{ fontSize: '0.8rem', textTransform: 'capitalize' }}>
-                  <strong>{qr.country}</strong><br/>
-                  {qr.videoName.replace(/[-_]/g, ' ')}
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.5rem',
+              backgroundColor: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              marginBottom: '0.5rem'
+            }}
+          >
+            <span style={{ 
+              transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
+              transition: 'transform 0.2s'
+            }}>
+              ▶
+            </span>
+            Generated QR Codes ({qrCodes.length})
+          </button>
+          
+          {isExpanded && (
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
+              gap: '1rem',
+              marginTop: '1rem'
+            }}>
+              {qrCodes.map((qr) => (
+                <div key={qr.fileName} style={{ 
+                  textAlign: 'center', 
+                  padding: '1rem',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  backgroundColor: 'white'
+                }}>
+                  <img 
+                    src={`/qr_codes/${qr.fileName}`} 
+                    alt={`QR code for ${qr.country} - ${qr.videoName}`}
+                    style={{ width: '150px', height: '150px', marginBottom: '0.5rem' }}
+                  />
+                  <div style={{ fontSize: '0.8rem', textTransform: 'capitalize' }}>
+                    <strong>{qr.country}</strong><br/>
+                    {qr.videoName.replace(/[-_]/g, ' ')}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

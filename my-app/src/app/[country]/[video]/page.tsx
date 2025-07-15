@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getAllVideos } from '../../utils/videoUtils';
+import { getAllVideos } from '../../lib/videoUtils';
 
 interface VideoPageProps {
   params: Promise<{

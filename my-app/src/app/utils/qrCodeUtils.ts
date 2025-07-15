@@ -1,7 +1,7 @@
 import QRCode from 'qrcode';
 import fs from 'fs';
 import path from 'path';
-import { getAllVideos } from './videoUtils';
+import { getAllVideos } from '../lib/videoUtils';
 
 const QR_CODES_DIR = path.join(process.cwd(), 'public', 'qr_codes');
 
