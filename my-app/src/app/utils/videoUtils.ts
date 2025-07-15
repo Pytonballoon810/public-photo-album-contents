@@ -11,8 +11,17 @@ export interface VideoInfo {
   fileExtension: string;
 }
 
+// Cache videos for a short time to improve performance but allow updates
+let videoCache: { videos: VideoInfo[], timestamp: number } | null = null;
+const CACHE_DURATION = 5000; // 5 seconds cache
+
 export function getAllVideos(): VideoInfo[] {
   try {
+    // Check cache first
+    if (videoCache && (Date.now() - videoCache.timestamp) < CACHE_DURATION) {
+      return videoCache.videos;
+    }
+
     if (!fs.existsSync(VIDEOS_DIR)) {
       console.log('Videos directory does not exist:', VIDEOS_DIR);
       return [];
@@ -49,12 +58,20 @@ export function getAllVideos(): VideoInfo[] {
       }
     });
 
+    // Update cache
+    videoCache = { videos, timestamp: Date.now() };
+    
     console.log(`Found ${videos.length} videos across ${countries.length} countries`);
     return videos;
   } catch (error) {
     console.error('Error reading videos directory:', error);
     return [];
   }
+}
+
+// Clear cache function for manual refresh
+export function clearVideoCache(): void {
+  videoCache = null;
 }
 
 export function getVideoInfo(country: string, videoName: string): VideoInfo | null {

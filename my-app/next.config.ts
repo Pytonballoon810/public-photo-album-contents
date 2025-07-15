@@ -1,13 +1,27 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'standalone',
+  // Remove standalone output for dev mode
+  // output: 'standalone',
   trailingSlash: true,
   images: {
     unoptimized: true
   },
   experimental: {
-    serverComponentsExternalPackages: ['fs', 'qrcode']
+    serverComponentsExternalPackages: ['fs', 'qrcode'],
+    // Enable turbopack for faster dev builds
+    turbo: {
+      rules: {
+        '*.svg': {
+          loaders: ['@svgr/webpack'],
+          as: '*.js',
+        },
+      },
+    },
+  },
+  // Enable file watching for public directory
+  watchOptions: {
+    pollIntervalMs: 1000, // Check for changes every second
   },
   async headers() {
     return [
@@ -16,7 +30,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
+            value: 'no-cache, no-store, must-revalidate',
           },
         ],
       },

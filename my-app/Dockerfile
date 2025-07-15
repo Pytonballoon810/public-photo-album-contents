@@ -1,53 +1,36 @@
 # Use the official Node.js runtime as the base image
 FROM node:22-alpine AS base
 
-# Install dependencies only when needed
+# Install dependencies
 FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci
 
-# Rebuild the source code only when needed
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-
-# Build the application
-RUN npm run build
-
-# Production image, copy all the files and run next
+# Development image with hot reloading
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV=production
-# Disable telemetry during runtime.
+ENV NODE_ENV=development
+# Keep telemetry disabled
 ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copy the public folder but exclude videos directory
-COPY --from=builder /app/public ./public
-RUN rm -rf ./public/videos
+# Copy node_modules from deps stage
+COPY --from=deps /app/node_modules ./node_modules
 
-# Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
-
-# Copy the standalone build output
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# Copy all source files (needed for dev mode)
+COPY --chown=nextjs:nodejs . .
 
 # Create videos and qr_codes directories for mount points
 RUN mkdir -p /app/public/videos
 RUN mkdir -p /app/public/qr_codes
-RUN chown nextjs:nodejs /app/public/videos
-RUN chown nextjs:nodejs /app/public/qr_codes
+RUN chown -R nextjs:nodejs /app/public
 
 USER nextjs
 
@@ -56,4 +39,5 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["node", "server.js"]
+# Run in development mode with turbopack for faster recompilation
+CMD ["npm", "run", "dev"]
