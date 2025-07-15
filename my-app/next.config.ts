@@ -7,18 +7,6 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true
   },
-  experimental: {
-    serverComponentsExternalPackages: ['fs', 'qrcode'],
-    // Enable turbopack for faster dev builds
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
-      },
-    },
-  },
   // Enable file watching for public directory
   watchOptions: {
     pollIntervalMs: 1000, // Check for changes every second

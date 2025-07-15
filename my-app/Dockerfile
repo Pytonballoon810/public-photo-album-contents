@@ -27,10 +27,13 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copy all source files (needed for dev mode)
 COPY --chown=nextjs:nodejs . .
 
+# Create .next directory for build artifacts
+RUN mkdir -p /app/.next
 # Create videos and qr_codes directories for mount points
 RUN mkdir -p /app/public/videos
 RUN mkdir -p /app/public/qr_codes
 RUN chown -R nextjs:nodejs /app/public
+RUN chown -R nextjs:nodejs /app/.next
 
 USER nextjs
 
